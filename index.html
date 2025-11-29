@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 
   <!-- Favicons (developer should replace with real files if available) -->
-  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
 
   <!-- Open Graph: good for sharing (developer should update with real image) -->
   <meta property="og:title" content="Evelyn Kavindu  — Film Editor & Filmmaker">
@@ -391,6 +391,7 @@
             <a href="https://www.tiktok.com/@evelynkavindu?_r=1&_t=ZS-91nrdeuMp0v" target="_blank" rel="noopener noreferrer" aria-label="TikTok">TikTok</a>
             <a href="https://snapchat.com" target="_blank" rel="noopener noreferrer" aria-label="Snapchat">Snapchat</a>
             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">YouTube</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
           <!--  <a href="https://vimeo.com" target="_blank" rel="noopener noreferrer" aria-label="Vimeo">Vimeo</a> -->
           </div>
         </div>
@@ -433,7 +434,7 @@ function showToast(message = "Coming Soon!") {
 
 // intercept Snapchat + YouTube clicks
 document.addEventListener('click', (e) => {
-  const comingSoonLinks = ['Snapchat', 'YouTube'];
+  const comingSoonLinks = ['Snapchat', 'YouTube', 'LinkedIn'];
 
   if (e.target.tagName === 'A' && comingSoonLinks.includes(e.target.innerText.trim())) {
     e.preventDefault();
