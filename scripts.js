@@ -350,16 +350,21 @@ const Modal = (function () {
   });
 })();
 
-/* -------------------------
-   Contact form: validation + send to /api/contact (Vercel)
-   - validates client-side
-   - POSTs JSON to /api/contact
-   - shows inline messages and handles loading state
-   - falls back to mailto if network / server fails
-   ------------------------- */
+
+/* Contact form -> Formspree (works with https://formspree.io/f/xvgjepvv)
+   - uses FormData + Accept: application/json for clean JSON responses
+   - client validation retained
+   - shows inline form note, disables submit button while sending
+   - falls back to mailto: if network/server fails
+*/
 (function initContactForm() {
+  // next url: https://formspree.io/f/xgvjgybk
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvgjepvv';
+
   // prefer existing q helper if present, otherwise create a minimal one
-  const qHelper = (window.q && typeof window.q === 'function') ? window.q : ((sel, ctx = document) => ctx.querySelector(sel));
+  const qHelper = (window.q && typeof window.q === 'function')
+    ? window.q
+    : ((sel, ctx = document) => ctx.querySelector(sel));
 
   const form = qHelper('#contactForm');
   if (!form) return;
@@ -395,34 +400,47 @@ const Modal = (function () {
       submitBtn.setAttribute('aria-busy', 'true');
     }
 
-    const payload = { name: nm, email, message: msg };
-
-    // try sending via API first (recommended)
     try {
-      const resp = await fetch('/api/contact', {
+      // use FormData so Formspree receives fields exactly as the HTML form
+      const formData = new FormData(form);
+
+      // optional: ensure a subject field exists for Formspree email subject
+      if (!formData.get('_subject')) {
+        formData.set('_subject', 'Portfolio Inquiry — Evelyn Kavindu');
+      }
+
+      // send to Formspree
+      const resp = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Accept': 'application/json' }, // request JSON response
+        body: formData
       });
 
       if (resp.ok) {
         showFormNote('Message sent — thank you!', 'success');
         form.reset();
       } else {
-        // read server message if available
-        let text = 'Failed to send message. ';
+        // try to read JSON error details (Formspree returns errors array sometimes)
+        let text = 'Failed to send message.';
         try {
           const json = await resp.json();
-          if (json && json.error) text += json.error;
-        } catch (_) { /* ignore JSON parse */ }
+          if (json) {
+            if (json?.errors && Array.isArray(json.errors) && json.errors.length) {
+              text = json.errors.map(it => it.message || it).join(' ');
+            } else if (json?.error) {
+              text = json.error;
+            }
+          }
+        } catch (err) {
+          // ignore parse error
+        }
         showFormNote(text + ' Opening your mail client as a fallback...', 'error');
 
-        // fallback to mailto after short delay to let user read message
+        // fallback to mailto after a short pause
         setTimeout(() => fallbackToMailto(nm, email, msg), 700);
       }
     } catch (err) {
-      // network error -> fallback
-      console.error('Contact API error:', err);
+      console.error('Formspree submit error:', err);
       showFormNote('Network error — opening your mail client as a fallback.', 'error');
       setTimeout(() => fallbackToMailto(nm, email, msg), 700);
     } finally {
@@ -465,6 +483,7 @@ const Modal = (function () {
     window.location.href = `mailto:kavinduevelyn@gmail.com?subject=${subject}&body=${body}`;
   }
 })();
+
 
 /* -------------------------
    Lazy load images
