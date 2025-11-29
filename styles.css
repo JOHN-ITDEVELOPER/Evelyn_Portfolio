@@ -1,0 +1,475 @@
+/* ===========================
+   EVELYN KAVINDU - styles.css
+   Corrected: section bleed fixes, header anchor safety,
+   improved light/dark variable handling, smooth transitions
+   =========================== */
+
+/* ---------------------------
+   Theme variables (dark default)
+   --------------------------- */
+:root{
+  --nav-height: 72px;
+
+  /* dark theme variables (default) */
+  --bg: #070707;
+  --panel: #0f0f0f;
+  --muted: #9b9b9b;
+  --text: #e9e6e2;
+  --accent: #cda34a; /* gold accent */
+  --accent-2: #b88930;
+  --glass: rgba(255,255,255,0.03);
+  --glass-strong: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.04);
+  --radius: 10px;
+  --container-width: 1100px;
+  --shadow-elev: 0 6px 24px rgba(0,0,0,0.45);
+  --soft-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  --inverse-text: #080808;
+  --muted-bg: rgba(255,255,255,0.02);
+}
+
+/* ---------------------------
+   Light theme overrides
+   Triggered by: <html data-theme="light">
+   --------------------------- */
+html[data-theme="light"] {
+  --bg: #f6f6f5;
+  --panel: #ffffff;
+  --muted: #555555;
+  --text: #111111;
+  --accent: #b8862e;
+  --accent-2: #976f23;
+  --glass: rgba(0,0,0,0.03);
+  --glass-strong: rgba(0,0,0,0.06);
+  --border: rgba(0,0,0,0.12);
+  --shadow-elev: 0 8px 30px rgba(13,13,13,0.08);
+  --soft-shadow: 0 6px 18px rgba(13,13,13,0.06);
+  --inverse-text: #ffffff;
+  --muted-bg: rgba(0,0,0,0.02);
+}
+
+/* ---------------------------
+   Core layout / reset
+   --------------------------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+.container{
+  width:calc(100% - 40px);
+  max-width:var(--container-width);
+  margin:0 auto;
+}
+
+/* Utility classes */
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.btn{
+  display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;
+  border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;
+  transition: background-color 180ms ease, color 180ms ease, transform 120ms ease;
+  box-shadow: var(--soft-shadow);
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  border:0;color:var(--inverse-text);font-weight:600;
+}
+.btn-ghost{border:1px solid var(--border);background:transparent}
+.btn-link{background:none;border:0;padding:6px 0;color:var(--accent)}
+
+/* ---------------------------
+   SECTION SAFETY - prevent bleed & headings cut by sticky nav
+   --------------------------- */
+/* Make each section a clean layer (no background leaks) */
+section {
+  position: relative; /* keep each section on its own stacking context */
+  z-index: 1;
+  background: transparent; /* content panels inside use --panel; sections stay neutral */
+  padding-top: 72px; /* visual spacing */
+  padding-bottom: 72px;
+  scroll-margin-top: calc(var(--nav-height) + 12px); /* prevents heading being cut by sticky nav on anchor jumps */
+}
+
+/* Ensure no rogue pseudo-elements overlap */
+section::before, section::after { content: none !important; }
+
+/* Section separator - subtle border to separate content */
+.section {
+  padding-top: 72px;
+  padding-bottom: 72px;
+  border-top: 1px solid var(--border);
+}
+
+/* Section header safe styles */
+.section-header { margin-bottom: 28px; position: relative; z-index: 2; }
+.section-header h2 { font-family: 'Georgia', 'Times New Roman', serif; font-size:28px; margin:0 0 6px; color:var(--text); }
+
+/* ---------------------------
+   NAVBAR
+   --------------------------- */
+.nav{
+  position:sticky; top:0; z-index:1200;
+  background: color-mix(in srgb, var(--panel) 85%, transparent 15%);
+  backdrop-filter: blur(6px);
+  border-bottom:1px solid var(--border);
+  transition: background-color 260ms ease, border-color 260ms ease;
+  height: var(--nav-height);
+  display:flex; align-items:center;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px; width:100%}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.logo-mark{
+  width:46px;height:46px;border-radius:8px;
+  background:linear-gradient(180deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--inverse-text);
+}
+.brand-text .name{font-weight:700}
+.brand-text .title{font-size:12px;color:var(--muted)}
+.nav-links{display:flex;gap:18px;align-items:center}
+.nav-links a{color:var(--muted);text-decoration:none;padding:6px;border-radius:6px}
+.nav-links a:hover{color:var(--text)}
+.nav-actions{display:flex;gap:8px;align-items:center}
+#themeToggle{padding:6px 10px;border-radius:6px;background:transparent;border:1px solid var(--border);cursor:pointer;color:var(--text)}
+
+/* ---------------------------
+   HERO
+   --------------------------- */
+.hero{padding:20px 0 40px}
+.hero-inner{display:grid;grid-template-columns:560px 1fr;gap:24px;align-items:center}
+.hero-media{min-width:0}
+.video-thumb{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;outline:0;box-shadow:var(--soft-shadow)}
+.video-thumb img{width:100%;height:auto;display:block}
+.video-thumb .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:48px;color:rgba(255,255,255,0.95);text-shadow:0 4px 16px rgba(0,0,0,0.6)}
+
+.hero-copy h1.cinematic{font-family: 'Georgia', serif;font-size:40px;margin:0 0 8px;color:var(--text)}
+.lead{font-weight:600;color:var(--accent)}
+.about-short{margin-top:12px;color:var(--muted);max-width:48ch}
+.hero-cta{margin-top:18px;display:flex;gap:12px}
+.quick-info{list-style:none;padding:0;margin-top:16px;color:var(--muted)}
+.quick-info li{margin-bottom:6px}
+
+/* ---------------------------
+   PANELS / CARDS - use var(--panel)
+   --------------------------- */
+/* Panels use --panel and will switch cleanly with theme */
+.card {
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--soft-shadow);
+}
+
+/* ABOUT GRID */
+.about-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start}
+.about-bio h3{margin-top:0}
+.about-contact .contact-card{background:var(--panel); padding:18px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--soft-shadow)}
+.about-contact a{color:var(--accent)}
+.download .btn{display:block;margin-top:10px}
+
+/* SKILLS */
+.skills-grid{display:flex;gap:24px}
+.skill-col{flex:1;background:var(--panel);padding:18px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--soft-shadow)}
+.skill-list{list-style:disc;padding-left:18px;margin:10px 0}
+.skills-badges{margin-top:14px}
+.badge{display:inline-block;padding:6px 10px;margin-right:8px;border-radius:999px;background:var(--muted-bg);font-size:13px;color:var(--muted)}
+
+/* PROJECTS */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.project-card{
+  background:var(--panel);border-radius:12px;overflow:hidden;border:1px solid var(--border);
+  display:flex;flex-direction:column;transition: transform 180ms ease, box-shadow 180ms ease;
+  box-shadow:var(--soft-shadow);
+}
+.project-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-elev)}
+.project-thumb{position:relative;height:180px;overflow:hidden}
+.project-thumb img{width:100%;height:100%;object-fit:cover}
+.thumb-play{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,0.45);padding:8px;border-radius:8px;color:var(--inverse-text)}
+.project-copy{padding:14px}
+.project-title{margin:0 0 6px}
+.project-meta{font-size:13px;color:var(--muted);margin-bottom:8px}
+.project-actions{margin-top:12px;display:flex;gap:8px}
+
+/* SHOWREEL (use card so background is controlled) */
+.showreel-inner{display:flex;gap:18px;align-items:center}
+.reel-card{display:flex;gap:18px;align-items:center}
+.reel-media{border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--border);background:var(--panel);box-shadow:var(--soft-shadow)}
+.reel-media img{display:block;max-width:100%}
+.play-large{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 18px;border-radius:14px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:var(--inverse-text);border:0;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.gallery-item img{width:100%;height:160px;object-fit:cover;border-radius:8px;box-shadow:var(--soft-shadow)}
+
+/* TESTIMONIALS */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.testimonial{background:var(--panel);padding:18px;border-radius:10px;border:1px solid var(--border);box-shadow:var(--soft-shadow)}
+.testimonial cite{display:block;margin-top:12px;color:var(--muted);font-size:13px}
+
+/* CONTACT - make form panel and quick contact panel explicit */
+.contact-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+.contact-form{
+  background:var(--panel);padding:18px;border-radius:12px;border:1px solid var(--border);box-shadow:var(--soft-shadow);
+}
+.contact-form label{display:block;margin-top:10px;font-weight:600}
+.contact-form input,.contact-form textarea{
+  width:100%;padding:10px;margin-top:6px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);
+  /* make border adapt to theme */
+  border-color: var(--border);
+}
+
+/* small tweak for placeholders contrast */
+.contact-form input::placeholder, .contact-form textarea::placeholder {
+  color: color-mix(in srgb, var(--muted) 70%, transparent 30%);
+}
+
+.form-actions{margin-top:12px;display:flex;gap:10px}
+.form-note{display:block;margin-top:8px;color:var(--muted)}
+
+/* FOOTER */
+.site-footer{padding:40px 0 20px;border-top:1px solid var(--border);margin-top:60px;background:transparent}
+.footer-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:start}
+.footer-section h4{margin:0 0 12px;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--accent)}
+.footer-text{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.footer-back{display:inline-block;font-size:13px;color:var(--accent);text-decoration:none;transition:color 0.2s}
+.footer-back:hover{color:var(--text)}
+.social-links,.contact-links{display:flex;flex-direction:column;gap:8px}
+.social-links a,.contact-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.social-links a:hover,.contact-links a:hover{color:var(--accent)}
+
+/* MODAL ROOT (video modal) */
+#modalRoot{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:30px;background:rgba(0,0,0,0.6);z-index:2000;
+  transition: background-color 200ms ease;
+}
+#modalRoot.active{display:flex}
+.modal{max-width:1000px;width:100%;background:var(--panel);border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-elev)}
+.modal .modal-body{position:relative;padding:0}
+.modal .close{position:absolute;right:12px;top:12px;background:rgba(0,0,0,0.18);border-radius:8px;padding:6px;color:var(--inverse-text);border:0}
+
+.mobile-menu {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  padding: 6px;
+  border-radius: 8px;
+  display: none; /* hidden by default, shown on mobile */
+}
+.mobile-menu:focus { outline: 3px solid rgba(205,163,74,0.18); outline-offset: 3px; }
+
+/* TOAST NOTIFICATIONS */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  padding: 10px 16px;
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+  z-index: 2000;
+}
+.toast.show {
+  opacity: 1;
+}
+
+/* ---------------------------
+   Responsive tweaks
+   --------------------------- */
+@media (max-width:1000px){
+  .hero-inner{grid-template-columns:1fr;}
+  .about-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .skills-grid{flex-direction:column}
+  .showreel-inner{flex-direction:column}
+  .nav-links{display:none}
+  .nav-inner{gap:12px}
+  .footer-content{grid-template-columns:1fr}
+}
+
+@media (max-width:768px){
+  :root{--container-width:100%}
+  .container{width:calc(100% - 20px)}
+  .section{padding:48px 0}
+  .hero{padding:40px 0 30px}
+  .nav-inner{padding:12px 16px}
+  .hero-copy h1.cinematic{font-size:32px}
+  .section-header h2{font-size:24px}
+  .about-contact .contact-card{padding:14px}
+  .projects-grid{grid-template-columns:1fr}
+  .project-thumb{height:220px}
+}
+
+@media (max-width:560px){
+  :root{--container-width:100%}
+  .container{width:calc(100% - 16px)}
+  .section{padding:36px 0}
+  .hero-copy h1.cinematic{font-size:26px}
+  .section-header h2{font-size:20px}
+  .section-header p{font-size:13px}
+  .hero-cta{flex-direction:column}
+  .hero-cta .btn{width:100%}
+  .btn{padding:10px 12px;font-size:14px}
+  .nav{top: 10px;}
+  .nav-links {
+  display: none;       /* hidden by default on mobile */
+  gap: 8px;
+}
+  .nav-inner {
+  display: flex;
+  flex-wrap: nowrap;               /* important: prevent wrapping */
+  align-items: center;
+  justify-content: space-between;  /* brand left, actions right */
+  gap: 12px;
+  padding: 12px;
+}
+  .brand {
+  min-width: 0;        /* allow shrinking */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+  .logo-mark{width:40px;height:40px}
+  .brand-text .name{font-size:14px;}
+  .brand-text .title{font-size:11px}
+  .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+ #downloadCV, #themeToggle {
+  padding: 8px;
+  font-size: 13px;
+}
+.nav.open .nav-links {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: calc(var(--nav-height) + 8px);
+  right: 12px;
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  z-index: 1300;
+}
+
+/* nav link styles inside the popover (optional tweak) */
+.nav.open .nav-links a {
+  padding: 8px 10px;
+  display: block;
+  color: var(--text);
+  white-space: nowrap;
+}
+  .about-short{font-size:13px;color:var(--muted)}
+  .lead{font-size:14px}
+  .quick-info li{font-size:12px}
+  .skills-badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{font-size:12px;padding:4px 8px}
+  .contact-form input,.contact-form textarea{font-size:14px}
+  .footer-content{grid-template-columns:1fr;gap:24px}
+  .gallery-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+  .gallery-item img{height:140px}
+  .testimonials-grid{grid-template-columns:1fr}
+
+  .mobile-menu {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 18px;
+    padding: 6px;
+    border-radius: 8px;
+    display: block; /* shown on mobile */
+  }
+  .mobile-menu:focus { outline: 3px solid rgba(205,163,74,0.18); outline-offset: 3px; }
+
+  
+}
+
+/* Accessibility: focus outlines */
+button:focus, a:focus, input:focus, textarea:focus{outline:3px solid color-mix(in srgb, var(--accent) 28%, transparent);outline-offset:3px}
+
+
+/* Image modal: make image visible but never exceed viewport */
+.modal.image-modal .modal-body {
+  padding: 18px;
+  max-width: 1100px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Constrain image to viewport height and keep aspect ratio */
+.modal.image-modal .modal-media img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: calc(100vh - 180px); /* keeps room for header/close + spacing */
+  object-fit: contain;             /* preserves aspect ratio */
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+}
+
+/* Close button: always visible and theme-aware via variables */
+:root {
+  /* default close button (dark theme) */
+  --modal-close-bg: rgba(0,0,0,0.7);
+  --modal-close-color: #ffffff;
+  --modal-close-border: none;
+  --modal-close-blur: 6px;
+}
+
+html[data-theme="light"] {
+  /* light-theme overrides */
+  --modal-close-bg: rgba(255,255,255,0.95);
+  --modal-close-color: #111111;
+  --modal-close-border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* close button base style */
+.modal .close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 60;
+  background: var(--modal-close-bg);
+  color: var(--modal-close-color);
+  border: var(--modal-close-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  backdrop-filter: blur(var(--modal-close-blur));
+}
+
+/* make focus visible and accessible */
+.modal .close:focus {
+  outline: 3px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  outline-offset: 3px;
+}
+
+/* ensure overlay is darker behind the light image for contrast */
+#modalRoot.active {
+  background: rgba(0,0,0,0.75);
+}
+
