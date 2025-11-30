@@ -359,7 +359,7 @@ const Modal = (function () {
 */
 (function initContactForm() {
   // next url: https://formspree.io/f/xgvjgybk
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvgjepvv';
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xgvjgybk';
 
   // prefer existing q helper if present, otherwise create a minimal one
   const qHelper = (window.q && typeof window.q === 'function')
