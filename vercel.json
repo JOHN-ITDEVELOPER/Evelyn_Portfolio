@@ -1,8 +1,8 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/payment-pending.html"
+      "src": "/(.*)",
+      "dest": "/payment-pending.html"
     }
   ]
 }
